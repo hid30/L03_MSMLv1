@@ -1,0 +1,35 @@
+name: Preprocessing Workflow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  preprocessing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.7'
+
+      - name: Install dependencies
+        working-directory: ./preprocessing
+        run: |
+          pip install -r requirements.txt
+      
+      - name: 📥 Download dataset
+        working-directory: ./preprocessing
+        run: |
+          mkdir -p loandata_raw
+          gdown --id 1zRWhL7er-dFskMrpGaNeUPlUiGYLVn6w -O loandata_raw/loan_data.csv
+
+      - name: Run Automate script
+        working-directory: ./preprocessing
+        run: |
+          python Automate.py
+
